@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+
+  ansible_controller:
+    container_name: ansible_controller
+    image: simorgh1/ansible-controller
+    build: 
+      context: .
+      dockerfile: ansible.controller.dockerfile    
+    networks:
+      - network
+
+  host:
+    image: simorgh1/ansible-host       
+    build: 
+      context: .
+      dockerfile: host.dockerfile  
+    ports:
+      - 22
+    networks:
+      - network
+    restart: unless-stopped
+    depends_on: 
+      - ansible_controller
+
+networks:
+  network:
+    driver: bridge

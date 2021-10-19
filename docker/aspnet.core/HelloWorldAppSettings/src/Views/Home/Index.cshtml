@@ -1,0 +1,23 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@{
+    ViewData["Title"] = "Home Page";
+    var hostName = System.Environment.MachineName;
+    var os = System.Environment.OSVersion;
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p>
+        System Information:
+        <p>
+            <b>Host:</b> @hostName<br/>
+            <b>OS:</b> @os.VersionString
+        </p>
+    </p>
+    <p>
+        <b>AppSettings:</b> @Configuration["Message"]
+    </p>
+</div>
