@@ -1,0 +1,46 @@
+version: '3.3'
+
+services: 
+    influxdb:
+        container_name: influxdb
+        image: influxdb
+        restart: unless-stopped
+        ports: 
+            - 8086:8086
+            - 8083:8083
+        user: 999:999
+        volumes: 
+            - /etc/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf
+            - /var/lib/influxdb:/var/lib/influxdb    
+        networks: 
+            - subnet
+        command: '-config /etc/influxdb/influxdb.conf'    
+
+    grafana:
+        container_name: grafana
+        image: grafana/grafana
+        restart: unless-stopped
+        user: 997:992
+        volumes: 
+            - /var/lib/grafana:/var/lib/grafana            
+        ports: 
+            - 3000:3000
+        networks: 
+            - subnet
+        depends_on: 
+            - influxdb    
+        
+    chronograf:
+        container_name: chronograf
+        image: chronograf
+        restart: unless-stopped
+        ports: 
+            - 8888:8888
+        networks: 
+            - subnet
+        depends_on: 
+            - influxdb
+        command: '--influxdb-url=http://influxdb:8086'             
+
+networks: 
+    subnet:
