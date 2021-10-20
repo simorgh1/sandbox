@@ -1,54 +1,43 @@
-# Using Serverless Azure Container Instances
+### Using Serverless Azure Container Instances
 
 My Current setup is:
 
-- Windows 10 Home Version 10.0.18363.693
-- WSL Ubuntu 18.04
-- VS Code 1.42.1
+- Macbook Air M1
+- VS Code
 - PowerShell preview
-- Azure Cli 2.1.0
+- Azure Cli beta
 - Azure PowerShell Module
 
-## Installing azure cli in WSL
+The first challenge was to build the devcontainer, since the current dotnet docker images for devcontainer are targeting amd64 platform. So I rebuilt the default Dockerfile with sdk:5.0 which has also arm64v8 platform, otherwise it would run very slow on m1 chip.
 
-Azure cli is the command line tool for interacting with azure services, It needs to be installed, the required packages and the installation is in the following script:
+The next challenge was to run azure-cli, since again the default installation is for amd64, which will not run on m1 again, so I installed azure-cli beta, which is based on python3 and it works on m1 without errors, sofar ;-)
 
-```bash
-user@host1: ./install-azure-cli.sh
-```
-
-## PowerShell
-
-PowerShell for linux could be installed using either the stable version 6.2.4 or the preview version 7.0.0.-rd.3.1
-
-```bash
-user@host1: sudo apt-get update -y && sudo apt-get install -y powershell
-```
-
-or the preview version:
-
-```bash
-user@host1: sudo apt-get update -y && sudo apt-get install -y powershell-preview
-```
-
-## Installing Azure PowerShell in WSL
+### Installing Azure PowerShell
 
 For installing Azure PowerShell, open pwsh and install the az Module:
 
 ```powershell
-PS /home/user1> Install-Module -Name Az -AllowClobber -Scope CurrentUser
+PS /workspaces/sandbox/azure> Install-Module -Name Az -AllowClobber -Scope CurrentUser
 ```
 
-## Azure Authentication
+### Azure Authentication
 
 Login to Azure from command line:
 
 ```powershell
-PS /home/user1> az login
+PS /workspaces/sandbox/azure> az login
 ```
 
-Connect Azure PowerShell
+After login, you could try to verify your connection by running some command like:
 
 ```powershell
-PS /home/user1> Connect-AzAccount
+PS /workspaces/sandbox/azure> az account list | jq .[0].user.name
+```
+
+which should return your loggedin user's email.
+
+Or you could login using Azure PowerShell:
+
+```powershell
+PS /workspaces/sandbox/azure> Connect-AzAccount
 ```
