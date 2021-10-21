@@ -1,8 +1,12 @@
 # AzureVM PowerShell module
+
 Provides methods for managing Azure VMs using az cli 
 
 ## Requirements
-Please first install [Azure cli for windows](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?view=azure-cli-latest)
+
+All requirements already available in the provided devcontainer, open the folder in vscode.
+
+### Getting started
 
 Then login to your azure account
 ```
@@ -18,6 +22,7 @@ PS C:\Azure\ Import-module .\AzureVM.psm1
 ## Methods
 
 ### Help
+
 ```
 PS C:\ Get-Help AzureVM
 ```
