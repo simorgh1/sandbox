@@ -1,9 +1,9 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:latest AS base
+FROM mcr.microsoft.com/dotnet/aspnet:latest AS base
 WORKDIR /app
 
 LABEL author="Bahram Maravandi"
 
-FROM mcr.microsoft.com/dotnet/core/sdk:latest AS build
+FROM mcr.microsoft.com/dotnet/sdk:latest AS build
 WORKDIR /src
 COPY ["helloworld.csproj", "/src"]
 RUN dotnet restore "helloworld.csproj"
