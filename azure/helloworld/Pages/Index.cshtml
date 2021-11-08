@@ -4,6 +4,8 @@
     ViewData["Title"] = "Home page";
     var hostName = System.Environment.MachineName;
     var os = System.Environment.OSVersion;
+    var version = System.Environment.Version;
+    var currentProcess = System.Diagnostics.Process.GetCurrentProcess();
 }
 
 <div class="text-center">
@@ -13,7 +15,10 @@
         System Information:
         <p>
             <b>Host:</b> @hostName<br/>
-            <b>OS:</b> @os.VersionString
+            <b>OS:</b> @os.VersionString<br/>
+            <b>Platform:</b> @os.Platform<br/>
+            <b>Dotnet:</b>@version<br/>
+            <b>ProcessId:</b>@currentProcess.Id
         </p>
     </p>
 </div>
