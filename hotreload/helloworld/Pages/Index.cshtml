@@ -1,0 +1,22 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Hotreload";
+    var hostName = System.Environment.MachineName;
+    var os = System.Environment.OSVersion;
+    var version = System.Environment.Version;
+    var currentProcess = System.Diagnostics.Process.GetCurrentProcess();
+    var arch = System.Runtime.InteropServices.RuntimeInformation.OSArchitecture;
+}
+
+<div class="text-center">
+    <h3 class="display-2">System Information</h3>
+    <p>
+        <b>Host:</b> @hostName &nbsp;
+        <b>OS:</b> @os.VersionString &nbsp;
+        <b>Platform:</b> @arch &nbsp;
+        <b>Dotnet:</b>@version &nbsp;
+        <b>ProcessId:</b>@currentProcess.Id
+    </p>
+    <p> Start with <b>dotnet watch run</b> and make changes, ProcessId remains the same </p>
+</div>
