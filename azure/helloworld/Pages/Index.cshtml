@@ -6,19 +6,16 @@
     var os = System.Environment.OSVersion;
     var version = System.Environment.Version;
     var currentProcess = System.Diagnostics.Process.GetCurrentProcess();
+    var arch = System.Runtime.InteropServices.RuntimeInformation.OSArchitecture;
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h3 class="display-2">System Information</h3>
     <p>
-        System Information:
-        <p>
-            <b>Host:</b> @hostName<br/>
-            <b>OS:</b> @os.VersionString<br/>
-            <b>Platform:</b> @os.Platform<br/>
-            <b>Dotnet:</b>@version<br/>
-            <b>ProcessId:</b>@currentProcess.Id
-        </p>
+        <b>Host:</b> @hostName &nbsp;
+        <b>OS:</b> @os.VersionString &nbsp;
+        <b>Platform:</b> @arch &nbsp;
+        <b>Dotnet:</b>@version &nbsp;
+        <b>ProcessId:</b>@currentProcess.Id
     </p>
 </div>
