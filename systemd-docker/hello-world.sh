@@ -22,13 +22,12 @@ then
 fi
 
 docker run -it -d \
-       --privileged \
-       --cgroupns=host \
-       -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
-       --name hello-world \
-       --hostname systemd-in-d \
-       -p 80:80 \
-       systemd-in-d:$SHA 1>/dev/null
+    --privileged \
+    --cgroupns=host \
+    -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
+    --name hello-world \
+    --hostname systemd-in-d \
+    -p 80:80 \
+    systemd-in-d:$SHA 1>/dev/null
 
 echo "hello-world started and is reachable using http://localhost/"
-
