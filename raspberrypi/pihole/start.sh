@@ -24,7 +24,7 @@ function update_pihole
         -p 80:80 \
         -p 443:443 \
         -e TZ="Germany/Berlin" \
-        -e WEBPASSWORD="9pfvLBf8" \
+        -e WEBPASSWORD="YOUR_PASSWORD" \
         -v "$(pwd)/etc-pihole/:/etc/pihole/" \
         -v "$(pwd)/etc-dnsmasq.d/:/etc/dnsmasq.d/" \
         --restart=unless-stopped \
