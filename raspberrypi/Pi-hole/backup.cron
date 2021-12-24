@@ -1,0 +1,1 @@
+0 * * * * /home/pi/tools/backup-pihole.sh >/dev/null 2>&1

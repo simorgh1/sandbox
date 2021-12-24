@@ -1,90 +1,64 @@
-## Pi-hole
+# Running Pi-hole with docker toolbox
 
-[Pi-hole](https://pi-hole.net/) is an application for blocking ads, desinged for RaspberryPi. The goal here is to use it as the central ad blocker in the home network and all devices can enjoy the internet ad free and faster ;-)
+[Pi-hole](https://pi-hole.net/) can be used in RaspberryPi, but it might be used in docker environment as well. I am using it for testing and later I prefer the RaspberryPi configuration.
 
-After installation, either you could add the DNS Servers in your router to use the RaspberryPi, then no other changes on any other devices are required, or you change the DNS Settings on the device you want to restrict the ad blocking only.
+## What is Pi-hole
 
-### Installation
+Pi-hole is an ad blocker, it serves as the DNS server and blocks all domains from its blacklist by sending a blank as response.
 
-For RaspberryPi setup and configuring ssh and wifi auto configuration, please read [this page](../Setup/Readme.md) first.
+## Setup
 
-I am going to install the Pi-hole as a docker container, but if you want to install it in your RaspberryPi, you could run the setup script provided by Pi-hole install page:
+*I am using [docker toolbox](https://docs.docker.com/toolbox/toolbox_install_windows/) and [VirtualBox](https://www.virtualbox.org/wiki/Downloads) in Windows 10 home.*
 
-```
-PS C:\> ssh pi@raspberrypi
-pi@raspberrypi:~ $ curl -sSL https://install.pi-hole.net | bash
-```
+Please update the run-pihole script and use your TZ and WEBPASSWORD env variables.
 
-### Docker Setup
-First install docker, if you already have it, skip this part:
+Start the default docker-machine if not already started
 
-```
-pi@raspberrypi:~ $ curl -fsSL https://get.docker.com | bash
+```powershell
+PS C:\Pi-hole> docker-machine start default
 ```
 
-Then add pi user to the docker group in order to be able to use docker commands as a non root user:
+Connect to the default machine and make the run-pihole script executeable, after that run the script:
+
+```powershell
+PS C:\Pi-hole> docker-machine ssh
+docker@default:~$ chmod +x /c/pi-hole/run-pihole.sh
+docker@default:~$ ./c/pi-hole/run-pihole.sh
 
 ```
-pi@raspberrypi:~ $ sudo usermod -aG docker
+
+You could run the script from windows, once it is executable:
+
+```powershell
+PS C:\Pi-hole> docker-machine ssh default /c/pi-hole/run-pihole.sh
 ```
 
-### Run Pi-hole  in docker container
-First download the run script:
+## Dashboard
 
-```
-pi@raspberrypi:~ $ curl -sSL https://raw.githubusercontent.com/pi-hole/docker-pi-hole/master/docker_run.sh -o docker_run.sh
-```
+Open dashboard in your browser:
 
-Then update the TZ and set your default password in the environment variables:
-
-```
-    -e TZ="Your country/Your TZ City" \ 
-    -e WEBPASSWORD="your strong password" \
+```powershell
+PS C:\Pi-hole> start http://$(docker-machine ip default)/admin/
 ```
 
-Then create the folder structure where the Pi-hole configurations are stored
+For the case you want to reset the password, please run the following command inside the container:
 
-```
-pi@raspberrypi:~ $ mkdir pihole
-pi@raspberrypi:~ $ cd pihole
-pi@raspberrypi:~ $ mkdir etc-pihole
-pi@raspberrypi:~ $ mkdir etc-dnsmasq.d
-```
-After that start the container:
-
-```
-pi@raspberrypi:~ $ ./docker_run.sh
+```powershell
+PS C:\Pi-hole> docker exec -it pihole pihole -a -p
 ```
 
-Now, it should be started, the output shows the current state of the container, you could check the status with the following command as well:
+Browsing the web is faster with Pi-hole installation and using the dashboard, there are plenty of information for the current status, managing the black/white lists and long term statistics.
 
-```
-pi@raspberrypi:~ $ docker ps -l
-```
+## Changing DNS settings
 
-Now, you have to configure your router to use the new DNS Server, just check the IP address of the RaspberryPi in the connected devices list in the router, and set this IP address as th new DNS Server.
+After installation, in Windows, open your network adapter settings and set the ip address of the Pi-hole as your new DNS server address. Do not set any secondary DNS server, it would make Pi-hole useless!
 
-### Backup
+*Add DNS server address for all network adapters.*
 
-I recommend to backup the pi-hole folders periodicaly. You could create a cron job to copy all contents of the pihole folder, namely: etc-pihole and etc-dnsmasq.d
+For testing, run the following command:
 
-I have attached a USB drive and backup using the following command:
-
-```
-pi@raspberrypi:~ $ sudo cp --parents -r -f pihole/ /mnt/usblxr/
+```powershell
+PS C:\Pi-hole> nslookup www.google.com
 ```
 
-You could add the above command into a shell script and schedule it to run daily.
-Add your backup shell into the cron with the following command:
-
-```
-pi@raspberrypi:~ $ crontab -e
-```
-
-Then add:
-
-```
-0 0 1 * * /home/pi/backup.sh
-```
-
-In order to backup everyday at 24:00
+If your network adapter setting for DNS server is correct, you should have a valid response and Pi-hole ip address as the configured DNS server.

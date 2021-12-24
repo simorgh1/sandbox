@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -e
 
 # https://github.com/pi-hole/docker-pi-hole/blob/master/README.md
 
@@ -6,12 +8,6 @@ printf 'Setting up pihole\n'
 
 docker container stop pihole > /dev/null
 docker container prune -f > /dev/null
-
-sudo rm -rf pihole > /dev/null
-mkdir pihole
-cd pihole
-mkdir etc-pihole
-mkdir etc-dnsmasq.d
 
 docker run -d \
     --name pihole \
@@ -22,8 +18,10 @@ docker run -d \
     -e WEBPASSWORD="9pfvLBf8" \
     -v "$(pwd)/etc-pihole/:/etc/pihole/" \
     -v "$(pwd)/etc-dnsmasq.d/:/etc/dnsmasq.d/" \
-    --dns=127.0.0.1 --dns=1.1.1.1 \
     --restart=unless-stopped \
+    --network=host \
+    --cap-add=NET_ADMIN \
+    --cap-add=CAP_SYS_NICE \
     pihole/pihole:latest
 
 printf 'Starting up pihole container '

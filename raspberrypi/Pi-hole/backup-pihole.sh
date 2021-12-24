@@ -1,0 +1,1 @@
+sudo cp --parents -r -f /home/pi/pihole/ /mnt/usblxr/
