@@ -1,46 +1,41 @@
-version: '3.3'
+version: '2'
+services:
 
-services: 
-    influxdb:
-        container_name: influxdb
-        image: influxdb
-        restart: unless-stopped
-        ports: 
-            - 8086:8086
-            - 8083:8083
-        user: 999:999
-        volumes: 
-            - /etc/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf
-            - /var/lib/influxdb:/var/lib/influxdb    
-        networks: 
-            - subnet
-        command: '-config /etc/influxdb/influxdb.conf'
+  telegraf:
+    image: telegraf:1.21.1
+    pid: "host"
+    network_mode: "host"
+    privileged: true
+    user: telegraf:995
+    depends_on:
+      - influxdb
+    restart: always
+    environment:
+       - interval=60s
+       - flush_interval=60s
+    volumes:
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /var/run/docker.sock:/var/run/docker.sock
 
-    grafana:
-        container_name: grafana
-        image: grafana/grafana
-        restart: unless-stopped
-        user: 997:992
-        volumes: 
-            - /var/lib/grafana:/var/lib/grafana
-        ports: 
-            - 3000:3000
-        networks: 
-            - subnet
-        depends_on: 
-            - influxdb
-        
-    chronograf:
-        container_name: chronograf
-        image: chronograf
-        restart: unless-stopped
-        ports: 
-            - 8888:8888
-        networks: 
-            - subnet
-        depends_on: 
-            - influxdb
-        command: '--influxdb-url=http://influxdb:8086'
+  influxdb:
+    image: influxdb:1.8.10
+    ports:
+      - "8082:8082"
+      - "8086:8086"
+      - "8089:8089"
+    restart: always
+    volumes:
+      - ./influxdb/influxdb.conf:/etc/influxdb/influxdb.conf:ro
+      - ./influxdb/data:/mnt/influxdb
 
-networks: 
-    subnet:
+  grafana:
+    image: grafana/grafana:8.3.3
+    ports:
+       - "3000:3000"
+    depends_on:
+       - influxdb
+    restart: always
+    volumes:
+      - ./grafana/config.ini:/etc/grafana/config.ini:ro
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
